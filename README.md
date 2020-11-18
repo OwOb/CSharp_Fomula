@@ -30,6 +30,7 @@ fml.Calculate(2.0);   // 1.50509384955828
 ---
 
 ## Formula operator count
+number of operator use in formula
 ```cs
 int Formula.OperatorCount()
 ```
