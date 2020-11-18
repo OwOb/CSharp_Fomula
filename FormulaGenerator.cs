@@ -6,7 +6,7 @@ namespace FormulaLib
 	{
 		// class member
 		private FormulaBase _formula;
-		  private int _operatorCount;
+		private int _operatorCount;
 
 		// analysis String to Formula
 		private FormulaBase StringToFormula(string fml)
@@ -29,13 +29,21 @@ namespace FormulaLib
 				}
 				else if (fml[i] == '+' && parenthesesCount == 0)
 				{
-					++_operatorCount;
-					return new FormulaBinary(StringToFormula(fml.Substring(0, i)), StringToFormula(fml.Substring(i+1)), FormulaFunction.Add);
+					string leftString = fml.Substring(0, i).Trim();
+					if (leftString != "" && "+-*/^".IndexOf(leftString[leftString.Length-1]) < 0)
+					{
+						++_operatorCount;
+						return new FormulaBinary(StringToFormula(leftString), StringToFormula(fml.Substring(i+1)), FormulaFunction.Add);
+					}
 				}
 				else if (fml[i] == '-' && parenthesesCount == 0)
 				{
-					++_operatorCount;
-					return new FormulaBinary(StringToFormula(fml.Substring(0, i)), StringToFormula(fml.Substring(i+1)), FormulaFunction.Subtract);
+					string leftString = fml.Substring(0, i).Trim();
+					if (leftString != "" && "+-*/^".IndexOf(leftString[leftString.Length-1]) < 0)
+					{
+						++_operatorCount;
+						return new FormulaBinary(StringToFormula(leftString), StringToFormula(fml.Substring(i+1)), FormulaFunction.Subtract);
+					}
 				}
 			}
 			// multiply(*) & divide(/)
@@ -78,18 +86,18 @@ namespace FormulaLib
 				}
 			}
 
-				// empty formula
-				if (fml == "")
-				{
-					 return new FormulaBase();
-				}
+			// empty formula
+			if (fml == "")
+			{
+					return new FormulaBase();
+			}
 
-				// negative
-				if (fml[0] == '-')
-				{
-					 ++_operatorCount;
-				return new FormulaUnary(StringToFormula(fml.Substring(1)), FormulaFunction.Negative);
-				}
+			// negative(-)
+			if (fml[0] == '-')
+			{
+					++_operatorCount;
+			return new FormulaUnary(StringToFormula(fml.Substring(1)), FormulaFunction.Negative);
+			}
 				
 			// variable "t"
 			if (fml == "t")
